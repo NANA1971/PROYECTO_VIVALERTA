@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend VIVALERTA - Interfaz de Usuario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            padding: 50px;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-title {
+            font-size: 2.8rem;
+            color: #fbbf24;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-content {
+            flex: 1;
+            color: white;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #fbbf24;
+        }
+
+        .card h3 {
+            color: #fbbf24;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p, .card ul {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card ul li {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .card ul li:before {
+            content: "▸";
+            color: #fbbf24;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            color: #90EE90;
+            line-height: 1.6;
+        }
+
+        .code-block .tag {
+            color: #FF6B9D;
+        }
+
+        .code-block .attr {
+            color: #87CEEB;
+        }
+
+        .code-block .value {
+            color: #FFD700;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        .list-styled {
+            list-style: none;
+            padding: 0;
+        }
+
+        .list-styled li {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 5px solid #fbbf24;
+            backdrop-filter: blur(10px);
+            font-size: 1.1rem;
+        }
+
+        .screenshot {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid #fbbf24;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            border: 2px dashed #fbbf24;
+            border-radius: 10px;
+            padding: 40px;
+            font-size: 3rem;
+            color: #fbbf24;
+            margin: 10px 0;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .color-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 3px solid white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-label {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: scale(1.05);
+            border-color: #fbbf24;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: rgba(251, 191, 36, 0.9);
+            color: #1e3a8a;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #fbbf24;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .tech-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tech-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .tech-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            .slide-title {
+                font-size: 2rem;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .code-block {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <div style="text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <h1 style="font-size: 3.5rem; color: white; margin-bottom: 20px;">VIVALERTA</h1>
+                <div style="font-size: 1.8rem; color: #fbbf24; margin-bottom: 40px;">Desarrollo Frontend</div>
+                <h2 style="font-size: 2.5rem; margin: 30px 0; color: white;">Interfaz de Usuario & Experiencia</h2>
+                <div style="font-size: 1.4rem; color: rgba(255,255,255,0.9); margin: 20px 0;">
+                    HTML5 • CSS3 • JavaScript • DOM Manipulation
+                </div>
+                <div style="font-size: 3rem; margin-top: 50px;">
+                    🎨 💻 📱
+                </div>
+            </div>
+            <div class="slide-number">1 / 13</div>
+        </div>
+
+        <!-- Slide 2: Stack Tecnológico -->
+        <div class="slide">
+            <h2 class="slide-title">Stack Tecnológico Frontend</h2>
+            <div class="slide-content">
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <div class="tech-icon">📄</div>
+                        <div class="tech-name">HTML5</div>
+                        <p style="margin-top: 10px; font-size: 1rem;">Estructura semántica y accesible</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🎨</div>
+                        <div class="tech-name">CSS3</div>
+                        <p style="margin-top: 10px; font-size: 1rem;">Estilos modernos y responsive</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">⚡</div>
+                        <div class="tech-name">JavaScript</div>
+                        <p style="margin-top: 10px; font-size: 1rem;">Interactividad y lógica</p>
+                    </div>
+                </div>
+                <div class="grid-2" style="margin-top: 40px;">
+                    <div class="card">
+                        <h3>🛠️ Características</h3>
+                        <ul>
+                            <li>Sin frameworks externos</li>
+                            <li>Vanilla JavaScript puro</li>
+                            <li>CSS personalizado desde cero</li>
+                            <li>100% compatible con navegadores</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>✨ Ventajas</h3>
+                        <ul>
+                            <li>Carga rápida y ligera</li>
+                            <li>Total control del código</li>
+                            <li>Fácil mantenimiento</li>
+                            <li>Sin dependencias externas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">2 / 13</div>
+        </div>
+
+        <!-- Slide 3: Estructura HTML -->
+        <div class="slide">
+            <h2 class="slide-title">Estructura HTML5</h2>
+            <div class="slide-content">
+                <div class="card">
+                    <h3>📋 Organización de Pantallas</h3>
+                    <p>La aplicación utiliza un sistema de pantallas (screens) que se muestran u ocultan dinámicamente sin recargar la página.</p>
+                </div>
+                <div class="code-block">
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="value">"welcome-screen"</span> <span class="attr">class</span>=<span class="value">"screen active"</span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Pantalla de bienvenida --&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="value">"login-screen"</span> <span class="attr">class</span>=<span class="value">"screen"</span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Pantalla de inicio de sesión --&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="value">"register-screen"</span> <span class="attr">class</span>=<span class="value">"screen"</span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Pantalla de registro --&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="value">"dashboard-screen"</span> <span class="attr">class</span>=<span class="value">"screen"</span><span class="tag">&gt;</span>
+    <span class="comment">&lt;!-- Dashboard con alertas --&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+                </div>
+                <ul class="list-styled">
+                    <li><strong>5 Pantallas Principales:</strong> Bienvenida, Login, Registro, Dashboard y Perfil</li>
+                    <li><strong>Navegación SPA:</strong> Single Page Application sin recargas</li>
+                    <li><strong>HTML Semántico:</strong> Uso de etiquetas apropiadas para mejor accesibilidad</li>
+                </ul>
+            </div>
+            <div class="slide-number">3 / 13</div>
+        </div>
+
+        <!-- Slide 4: Diseño de Colores -->
+        <div class="slide">
+            <h2 class="slide-title">Paleta de Colores</h2>
+            <div class="slide-content">
+                <div class="card">
+                    <h3>🎨 Identidad Visual Corporativa</h3>
+                    <p>Colores seleccionados para transmitir confianza, profesionalismo y energía</p>
+                </div>
+                <div class="color-palette">
+                    <div>
+                        <div class="color-box" style="background: #1e3a8a;">
+                            <div class="color-label">#1e3a8a</div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; font-weight: bold;">Azul Oscuro</p>
+                    </div>
+                    <div>
+                        <div class="color-box" style="background: #2563eb;">
+                            <div class="color-label">#2563eb</div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; font-weight: bold;">Azul Medio</p>
+                    </div>
+                    <div>
+                        <div class="color-box" style="background: #3b82f6;">
+                            <div class="color-label">#3b82f6</div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; font-weight: bold;">Azul Claro</p>
+                    </div>
+                    <div>
+                        <div class="color-box" style="background: #fbbf24;">
+                            <div class="color-label">#fbbf24</div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; font-weight: bold;">Amarillo</p>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 30px;">
+                    <h3>💡 Aplicación de Colores</h3>
+                    <ul>
+                        <li><strong>Degradado Azul:</strong> Fondo principal que transmite confianza y profesionalismo</li>
+                        <li><strong>Amarillo Vibrante:</strong> Elementos destacados, títulos y llamados a la acción</li>
+                        <li><strong>Blanco/Transparencias:</strong> Contenido y elementos de interfaz con efecto glassmorphism</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">4 / 13</div>
+        </div>
+
+        <!-- Slide 5: CSS Avanzado -->
+        <div class="slide">
+            <h2 class="slide-title">Técnicas CSS Avanzadas</h2>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🌈 Gradientes</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+background: linear-gradient(
+    135deg,
+    #1e3a8a 0%,
+    #2563eb 50%,
+    #3b82f6 100%
+);
+                        </div>
+                        <p>Degradados suaves para fondos atractivos</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔍 Glassmorphism</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+background: rgba(255,255,255,0.1);
+backdrop-filter: blur(10px);
+border: 2px solid 
+    rgba(255,255,255,0.2);
+                        </div>
+                        <p>Efecto de vidrio esmerilado moderno</p>
+                    </div>
+                </div>
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h3>✨ Animaciones</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>📱 Responsive</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+@media (max-width: 768px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">5 / 13</div>
+        </div>
+
+        <!-- Slide 6: Manipulación del DOM -->
+        <div class="slide">
+            <h2 class="slide-title">Manipulación del DOM</h2>
+            <div class="slide-content">
+                <div class="card">
+                    <h3>🎯 DOM (Document Object Model)</h3>
+                    <p>JavaScript manipula dinámicamente el HTML sin recargar la página, creando una experiencia fluida y moderna.</p>
+                </div>
+                <div class="code-block">
+<span class="comment">// Cambiar entre pantallas</span>
+<span class="method">mostrarPantalla</span>(pantallaId) {
+    document.<span class="method">querySelectorAll</span>('.screen').<span class="method">forEach</span>(screen => {
+        screen.classList.<span class="method">remove</span>('active');
+    });
+    document.<span class="method">getElementById</span>(pantallaId).classList.<span class="method">add</span>('active');
+}
+
+<span class="comment">// Crear elementos dinámicamente</span>
+<span class="keyword">const</span> card = document.<span class="method">createElement</span>('div');
+card.className = 'alert-card';
+card.innerHTML = contenido;
+container.<span class="method">appendChild</span>(card);
+                </div>
+                <ul class="list-styled">
+                    <li><strong>querySelector/querySelectorAll:</strong> Selección eficiente de elementos</li>
+                    <li><strong>createElement:</strong> Creación dinámica de contenido</li>
+                    <li><strong>addEventListener:</strong> Gestión de eventos de usuario</li>
+                    <li><strong>classList:</strong> Manipulación de clases CSS</li>
+                </ul>
+            </div>
+            <div class="slide-number">6 / 13</div>
+        </div>
+
+        <!-- Slide 7: Sistema de Eventos -->
+        <div class="slide">
+            <h2 class="slide-title">Sistema de Eventos</h2>
+            <div class="slide-content">
+                <div class="card">
+                    <h3>⚡ Event Listeners</h3>
+                    <p>Los eventos capturan las interacciones del usuario y ejecutan las acciones correspondientes.</p>
+                </div>
+                <div class="code-block">
+<span class="comment">// Evento de formulario</span>
+document.<span class="method">getElementById</span>('login-form')
+    .<span class="method">addEventListener</span>('submit', (e) => {
+        e.<span class="method">preventDefault</span>();
+        <span class="keyword">this</span>.<span class="method">procesarLogin</span>();
+    });
+
+<span class="comment">// Evento de botón</span>
+document.<span class="method">getElementById</span>('logout-btn')
+    .<span class="method">addEventListener</span>('click', () => {
+        <span class="keyword">this</span>.<span class="method">logout</span>();
+    });
+
+<span class="comment">// Evento de checkbox</span>
+checkboxes.<span class="method">forEach</span>(cb => {
+    cb.<span class="method">addEventListener</span>('change', (e) => {
+        <span class="method">actualizarAlertas</span>(e.target.value);
+    });
+});
+                </div>
+                <div class="grid-3">
+                    <div class="feature-box">
+                        <div class="feature-icon">📝</div>
+                        <div class="feature-title">Forms</div>
+                        <p>Submit, input, change</p>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">🖱️</div>
+                        <div class="feature-title">Clicks</div>
+                        <p>Botones y navegación</p>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">⌨️</div>
+                        <div class="feature-title">Keyboard</div>
+                        <p>Atajos y accesibilidad</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">7 / 13</div>
+        </div>
+
+        <!-- Slide 8: Pantalla de Bienvenida -->
+        <div class="slide">
+            <h2 class="slide-title">Pantalla de Bienvenida</h2>
+            <div class="slide-content">
+                <div class="screenshot">
+                    <div class="screenshot-placeholder">
+                        🏠<br>
+                        <div style="font-size: 1.5rem; margin-top: 20px;">Vista de Bienvenida</div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.1rem;">Logo + Misión, Visión, Objetivo + Botones de acción</p>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🎨 Elementos Visuales</h3>
+                        <ul>
+                            <li>Logo prominente animado</li>
+                            <li>Título con tagline</li>
+                            <li>3 tarjetas informativas</li>
+                            <li>Botones de acción principales</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>✨ Características</h3>
+                        <ul>
+                            <li>Animación de entrada suave</li>
+                            <li>Efecto hover en tarjetas</li>
+                            <li>Diseño centrado y balanceado</li>
+                            <li>Llamados a la acción claros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">8 / 13</div>
+        </div>
+
+        <!-- Slide 9: Formularios -->
+        <div class="slide">
+            <h2 class="slide-title">Sistema de Formularios</h2>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>📝 Login</h3>
+                        <ul>
+                            <li>Usuario y contraseña</li>
+                            <li>Validación en tiempo real</li>
+                            <li>Mensajes de error específicos</li>
+                            <li>Link a registro</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👤 Registro</h3>
+                        <ul>
+                            <li>Datos personales completos</li>
+                            <li>Selección de alertas (checkboxes)</li>
+                            <li>Validaciones múltiples</li>
+                            <li>Confirmación visual</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-block" style="margin-top: 20px;">
+<span class="comment">// Validación de formulario</span>
+<span class="method">procesarRegistro</span>() {
+    <span class="keyword">const</span> nombre = document.<span class="method">getElementById</span>('reg-nombre').value.<span class="method">trim</span>();
+    
+    <span class="keyword">if</span> (!nombre || !apellido || !identificacion) {
+        <span class="keyword">this</span>.<span class="method">mostrarMensaje</span>('error', 'Complete todos los campos');
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="keyword">if</span> (alertas.length === 0) {
+        <span class="keyword">this</span>.<span class="method">mostrarMensaje</span>('error', 'Seleccione al menos una alerta');
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Procesar registro...</span>
+}
+                </div>
+            </div>
+            <div class="slide-number">9 / 13</div>
+        </div>
+
+        <!-- Slide 10: Dashboard -->
+        <div class="slide">
+            <h2 class="slide-title">Dashboard de Usuario</h2>
+            <div class="slide-content">
+                <div class="screenshot">
+                    <div class="screenshot-placeholder">
+                        📊<br>
+                        <div style="font-size: 1.5rem; margin-top: 20px;">Vista Dashboard</div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.1rem;">Header + Grid de Alertas Personalizadas</p>
+                </div>
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>🎯 Header</h3>
+                        <ul style="font-size: 1rem;">
+                            <li>Logo y nombre de app</li>
+                            <li>Nombre del usuario</li>
+                            <li>Botones de perfil y logout</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔔 Alertas</h3>
+                        <ul style="font-size: 1rem;">
+                            <li>Grid responsive</li>
+                            <li>Solo alertas seleccionadas</li>
+                            <li>Actualización en tiempo real</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💳 Tarjetas</h3>
+                        <ul style="font-size: 1rem;">
+                            <li>Icono identificativo</li>
+                            <li>Título de categoría</li>
+                            <li>Lista de notificaciones</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">10 / 13</div>
+        </div>
+
+        <!-- Slide 11: Diseño Responsive -->
+        <div class="slide">
+            <h2 class="slide-title">Diseño Responsive</h2>
+            <div class="slide-content">
+                <div class="card">
+                    <h3>📱 Adaptabilidad Multi-Dispositivo</h3>
+                    <p>La aplicación se adapta perfectamente a diferentes tamaños de pantalla usando CSS Grid y Media Queries.</p>
+                </div>
+                <div class="code-block">
+<span class="comment">/* Desktop - Grid de 3 columnas */</span>
+.alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+<span class="comment">/* Tablet - 2 columnas */</span>
+@media (max-width: 768px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    .alerts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+<span class="comment">/* Mobile - 1 columna */</span>
+@media (max-width: 480px) {
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+    .slide-title {
+        font-size: 1.8rem;
+    }
+}
+                </div>
+                <div class="grid-3">
+                    <div class="feature-box">
+                        <div class="feature-icon">💻</div>
+                        <div class="feature-title">Desktop</div>
+                        <p>Grid completo, 3 columnas</p>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-title">Tablet</div>
+                        <p>2 columnas adaptativas</p>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">📲</div>
+                        <div class="feature-title">Mobile</div>
+                        <p>1 columna vertical</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">11 / 13</div>
+        </div>
+
+        <!-- Slide 12: Interactividad -->
+        <div class="slide">
+            <h2 class="slide-title">Elementos Interactivos</h2>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>✨ Transiciones</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px 
+        rgba(251, 191, 36, 0.6);
+}
+                        </div>
+                        <p>Efectos suaves en hover para mejor UX</p>
+                    </div>
+                    <div class="card">
+                        <h3>🎬 Animaciones</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+                        </div>
+                        <p>Entrada suave de elementos</p>
+                    </div>
+                </div>
+                <ul class="list-styled" style="margin-top: 20px;">
+                    <li><strong>Hover Effects:</strong> Cambios visuales al pasar el mouse sobre elementos interactivos</li>
+                    <li><strong>Click Feedback:</strong> Respuesta visual inmediata a las acciones del usuario</li>
+                    <li><strong>Loading States:</strong> Indicadores de carga para mejor experiencia</li>
+                    <li><strong>Error/Success Messages:</strong> Retroalimentación clara sobre el resultado de acciones</li>
+                </ul>
+            </div>
+            <div class="slide-number">12 / 13</div>
+        </div>
+
+        <!-- Slide 13: Ventajas del Frontend -->
+        <div class="slide">
+            <h2 class="slide-title">Ventajas de la Implementación</h2>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🎨 Diseño</h3>
+                        <ul>
+                            <li>Interfaz moderna y profesional</li>
+                            <li>Colores corporativos consistentes</li>
+                            <li>Efectos visuales atractivos</li>
+                            <li>Tipografía legible y clara</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Performance</h3>
+                        <ul>
+                            <li>Carga rápida sin dependencias</li>
+                            <li>Sin recargas de página (SPA)</li>
+                            <li>Animaciones optimizadas</li>
+                            <li>Código limpio y eficiente</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📱 Responsividad</h3>
+                        <ul>
+                            <li>Funciona en todos los dispositivos</li>
+                            <li>Diseño adaptativo fluido</li>
+                            <li>Touch-friendly en móviles</li>
+                            <li>Mismo código, múltiples pantallas</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>♿ Accesibilidad</h3>
+                        <ul>
+                            <li>HTML semántico</li>
+                            <li>Contraste de colores adecuado</li>
+                            <li>Navegación por teclado</li>
+                            <li>Mensajes de error claros</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 20px; text-align: center;">
+                    <h3 style="justify-content: center;">✅ Resultado Final</h3>
+                    <p style="font-size: 1.3rem;">Una interfaz de usuario completa, funcional y profesional que ofrece una experiencia fluida y moderna</p>
+                </div>
+            </div>
+            <div class="slide-number">13 / 14</div>
+        </div>
+
+        <!-- Slide 14: Pantalla Final -->
+        <div class="slide">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <div style="font-size: 6rem; margin-bottom: 40px;">🎉</div>
+                <h1 style="font-size: 4rem; color: #fbbf24; margin-bottom: 30px;">¡Gracias por su atención!</h1>
+                <h2 style="font-size: 2.5rem; color: white; margin-bottom: 40px;">VIVALERTA - Frontend</h2>
+                <p style="font-size: 1.8rem; color: rgba(255,255,255,0.9); margin-bottom: 20px;">Interfaz de Usuario y Experiencia</p>
+                <div style="font-size: 1.3rem; color: rgba(255,255,255,0.7); margin-top: 50px;">
+                    HTML5 • CSS3 • JavaScript • DOM
+                </div>
+                <div style="font-size: 3rem; margin-top: 60px;">
+                    🎨 💻 📱
+                </div>
+            </div>
+            <div class="slide-number">14 / 14</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+        <button class="btn" id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            
+            if (currentSlide === slides.length - 1) {
+                nextBtn.textContent = '✓ Finalizado';
+                nextBtn.style.opacity = '0.7';
+            } else {
+                nextBtn.textContent = 'Siguiente →';
+                nextBtn.style.opacity = '1';
+            }
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Inicializar
+        prevBtn.disabled = true;
+    </script>
+</body>
+</html>

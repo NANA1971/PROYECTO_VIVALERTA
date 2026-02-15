@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVALERTA - La APP que te mantiene al tanto</title>
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+    <!-- Pantalla de Bienvenida -->
+    <div id="welcome-screen" class="screen active">
+        <div class="container">
+            <div class="logo-container">
+                <img src="./imagen.jgp/ImagenLogo.jpg" alt="VIVALERTA Logo" class="logo">
+                <h1>VIVALERTA</h1>
+                <p class="tagline">"La APP que te mantiene al tanto"</p>
+            </div>
+            
+            <div class="mission-section">
+                <div class="mission-card">
+                    <h2>Misión</h2>
+                    <p>Proporcionar alertas rápidas, personalizadas y relevantes sobre temas de interés para los ciudadanos, manteniendo informada a la comunidad en tiempo real.</p>
+                </div>
+                
+                <div class="mission-card">
+                    <h2>Visión</h2>
+                    <p>Ser la aplicación líder en alertas ciudadanas, empoderando a las personas con datos precisos y relevantes para tomar decisiones informadas.</p>
+                </div>
+                
+                <div class="mission-card">
+                    <h2>Objetivo</h2>
+                    <p>Desarrollar una plataforma confiable de alertas en noticias, clima, eventos, tránsito y salud para todos los ciudadanos.</p>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="app.showLogin()">Iniciar Sesión</button>
+                <button class="btn btn-secondary" onclick="app.showRegister()">Registrarse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Login -->
+    <div id="login-screen" class="screen">
+        <div class="container">
+            <div class="logo-mini">
+                <img src="./imagen.jgp/ImagenLogo.jpg" alt="VIVALERTA">
+                <h2>Iniciar Sesión</h2>
+            </div>
+            
+            <form id="login-form" class="form-card">
+                <div class="form-group">
+                    <label for="login-username">Usuario</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                
+                <div id="login-error" class="error-message"></div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                    <button type="button" class="btn btn-secondary" onclick="app.showWelcome()">Volver</button>
+                </div>
+                
+                <p class="form-footer">
+                    ¿No tienes cuenta? <a href="#" onclick="app.showRegister()">Regístrate aquí</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pantalla de Registro -->
+    <div id="register-screen" class="screen">
+        <div class="container">
+            <div class="logo-mini">
+                <img src="./imagen.jgp/ImagenLogo.jpg" alt="VIVALERTA">
+                <h2>Registro de Usuario</h2>
+            </div>
+            
+            <form id="register-form" class="form-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reg-nombre">Nombre</label>
+                        <input type="text" id="reg-nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-apellido">Apellido</label>
+                        <input type="text" id="reg-apellido" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-identificacion">Número de Identificación</label>
+                    <input type="text" id="reg-identificacion" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-direccion">Dirección</label>
+                    <input type="text" id="reg-direccion" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-usuario">Usuario</label>
+                    <input type="text" id="reg-usuario" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-password">Contraseña</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Selecciona las Alertas que deseas recibir:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta" value="transito">
+                            <span>🚗 Tránsito</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta" value="clima">
+                            <span>🌤️ Clima</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta" value="salud">
+                            <span>🏥 Salud</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta" value="eventos">
+                            <span>🎉 Eventos</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta" value="noticias">
+                            <span>📰 Noticias</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="register-error" class="error-message"></div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Registrarse</button>
+                    <button type="button" class="btn btn-secondary" onclick="app.showWelcome()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pantalla Principal (Dashboard) -->
+    <div id="dashboard-screen" class="screen">
+        <div class="dashboard-container">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <img src="./imagen.jgp/ImagenLogo.jpg" alt="VIVALERTA" class="logo-small">
+                    <h1>VIVALERTA</h1>
+                </div>
+                <div class="header-right">
+                    <span id="user-name-header"></span>
+                    <button class="btn btn-icon" onclick="app.showProfile()">👤Editar Perfil </button>
+                    <button class="btn btn-icon" onclick="app.logout()">🚪Salir </button>
+                </div>
+            </header>
+            
+            <div class="dashboard-content">
+                <div class="welcome-message">
+                    <h2 id="dashboard-welcome"></h2>
+                    <p>Estas son tus alertas personalizadas</p>
+                </div>
+                
+                <div id="alerts-container" class="alerts-grid">
+                    <!-- Las alertas se cargarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Perfil -->
+    <div id="profile-screen" class="screen">
+        <div class="container">
+            <div class="logo-mini">
+                <img src="./imagen.jgp/ImagenLogo.jpg" alt="VIVALERTA">
+                <h2>Mi Perfil</h2>
+            </div>
+            
+            <form id="profile-form" class="form-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prof-nombre">Nombre</label>
+                        <input type="text" id="prof-nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prof-apellido">Apellido</label>
+                        <input type="text" id="prof-apellido" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="prof-identificacion">Número de Identificación</label>
+                    <input type="text" id="prof-identificacion" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="prof-direccion">Dirección</label>
+                    <input type="text" id="prof-direccion" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Mis Alertas Activas:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta-prof" value="transito">
+                            <span>🚗 Tránsito</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta-prof" value="clima">
+                            <span>🌤️ Clima</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta-prof" value="salud">
+                            <span>🏥 Salud</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta-prof" value="eventos">
+                            <span>🎉 Eventos</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="alerta-prof" value="noticias">
+                            <span>📰 Noticias</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="profile-message" class="success-message"></div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="button" class="btn btn-secondary" onclick="app.showDashboard()">Volver</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./JS/proyectoVivalerta.js"></script>
+    <script src="./JS/App.js"></script>
+    <script src="./JS/clasesBase.js"></script>
+    <script src="./JS/clasesHeredadasAlertas.js"></script>
+    <script src="./JS/localStorage.js"></script>
+</body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend VIVALERTA - Arquitectura POO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            padding: 50px;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .slide-title {
+            font-size: 2.8rem;
+            color: #fbbf24;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .slide-content {
+            flex: 1;
+            color: white;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            color: #90EE90;
+            line-height: 1.6;
+        }
+
+        .code-block .keyword {
+            color: #FF6B9D;
+            font-weight: bold;
+        }
+
+        .code-block .class-name {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .code-block .method {
+            color: #87CEEB;
+        }
+
+        .code-block .comment {
+            color: #888;
+            font-style: italic;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #fbbf24;
+        }
+
+        .card h3 {
+            color: #fbbf24;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p, .card ul {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card ul li {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .card ul li:before {
+            content: "▸";
+            color: #fbbf24;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .diagram {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid #fbbf24;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .diagram-box {
+            background: rgba(30, 58, 138, 0.8);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .diagram-arrow {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        .list-styled {
+            list-style: none;
+            padding: 0;
+        }
+
+        .list-styled li {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 5px solid #fbbf24;
+            backdrop-filter: blur(10px);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: rgba(251, 191, 36, 0.9);
+            color: #1e3a8a;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #fbbf24;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .icon {
+            font-size: 2rem;
+        }
+
+        .flow-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .flow-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 15px 30px;
+            min-width: 300px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            .slide-title {
+                font-size: 2rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <div class="slide-header">
+                <h1 style="font-size: 3.5rem; color: white; margin-bottom: 20px;">VIVALERTA</h1>
+                <div style="font-size: 1.8rem; color: #fbbf24; margin-bottom: 40px;">Arquitectura Backend</div>
+            </div>
+            <div class="slide-content" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <h2 style="font-size: 2.5rem; margin: 30px 0; color: white;">Programación Orientada a Objetos</h2>
+                <div style="font-size: 1.4rem; color: rgba(255,255,255,0.9); margin: 20px 0;">
+                    Implementación técnica del sistema de gestión de usuarios y alertas
+                </div>
+                <div style="font-size: 3rem; margin-top: 50px;">
+                    💻 📊 🔧
+                </div>
+            </div>
+            <div class="slide-number">1 / 12</div>
+        </div>
+
+        <!-- Slide 2: Arquitectura General -->
+        <div class="slide">
+            <h2 class="slide-title">Arquitectura del Sistema</h2>
+            <div class="slide-content">
+                <div class="diagram">
+                    <div class="diagram-box" style="font-size: 1.3rem; font-weight: bold;">
+                        🏗️ SistemaGestion
+                    </div>
+                    <div class="diagram-arrow">↓</div>
+                    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                        <div class="diagram-box">
+                            👤 Usuario
+                        </div>
+                        <div class="diagram-box">
+                            🔔 Alerta (Base)
+                        </div>
+                    </div>
+                    <div class="diagram-arrow">↓</div>
+                    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; font-size: 0.9rem;">
+                        <div class="diagram-box" style="min-width: 120px;">🚗 Tránsito</div>
+                        <div class="diagram-box" style="min-width: 120px;">🌤️ Clima</div>
+                        <div class="diagram-box" style="min-width: 120px;">🏥 Salud</div>
+                        <div class="diagram-box" style="min-width: 120px;">🎉 Eventos</div>
+                        <div class="diagram-box" style="min-width: 120px;">📰 Noticias</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <p style="text-align: center; font-size: 1.2rem;">
+                        El sistema utiliza una <span class="highlight">arquitectura modular</span> basada en clases que aprovecha los pilares fundamentales de la POO: <span class="highlight">Herencia, Polimorfismo, Encapsulamiento y Abstracción</span>
+                    </p>
+                </div>
+            </div>
+            <div class="slide-number">2 / 12</div>
+        </div>
+
+        <!-- Slide 3: Clase Usuario -->
+        <div class="slide">
+            <h2 class="slide-title">Clase Usuario</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="keyword">class</span> <span class="class-name">Usuario</span> {
+    <span class="keyword">constructor</span>(nombre, apellido, numeroIdentificacion, 
+                direccion, usuario, contrasena) {
+        <span class="keyword">this</span>.nombre = nombre;
+        <span class="keyword">this</span>.apellido = apellido;
+        <span class="keyword">this</span>.numeroIdentificacion = numeroIdentificacion;
+        <span class="keyword">this</span>.direccion = direccion;
+        <span class="keyword">this</span>.usuario = usuario;
+        <span class="keyword">this</span>.contrasena = contrasena;
+        <span class="keyword">this</span>.alertasSeleccionadas = [];
+    }
+
+    <span class="method">agregarAlerta</span>(tipoAlerta) { <span class="comment">/* ... */</span> }
+    <span class="method">eliminarAlerta</span>(tipoAlerta) { <span class="comment">/* ... */</span> }
+    <span class="method">obtenerNombreCompleto</span>() { <span class="comment">/* ... */</span> }
+    <span class="method">actualizarDatos</span>(nombre, apellido, direccion) { <span class="comment">/* ... */</span> }
+}
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3><span class="icon">📋</span> Atributos</h3>
+                        <ul>
+                            <li>Datos personales del usuario</li>
+                            <li>Credenciales de acceso</li>
+                            <li>Array de alertas seleccionadas</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3><span class="icon">⚙️</span> Métodos</h3>
+                        <ul>
+                            <li>Gestión de alertas</li>
+                            <li>Actualización de información</li>
+                            <li>Obtención de datos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">3 / 12</div>
+        </div>
+
+        <!-- Slide 4: Clase Alerta (Base) -->
+        <div class="slide">
+            <h2 class="slide-title">Clase Alerta - Superclase</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="keyword">class</span> <span class="class-name">Alerta</span> {
+    <span class="keyword">constructor</span>(tipo, icono) {
+        <span class="keyword">this</span>.tipo = tipo;
+        <span class="keyword">this</span>.icono = icono;
+        <span class="keyword">this</span>.alertas = [];
+    }
+
+    <span class="method">agregarNotificacion</span>(titulo, descripcion) {
+        <span class="keyword">this</span>.alertas.<span class="method">push</span>({
+            titulo,
+            descripcion,
+            fecha: <span class="keyword">new</span> Date().<span class="method">toLocaleString</span>('es-CO')
+        });
+    }
+
+    <span class="method">obtenerAlertas</span>() {
+        <span class="keyword">return this</span>.alertas;
+    }
+
+    <span class="method">limpiarAlertas</span>() {
+        <span class="keyword">this</span>.alertas = [];
+    }
+}
+                </div>
+                <div class="card">
+                    <h3><span class="icon">🎯</span> Propósito</h3>
+                    <p>Define la <span class="highlight">estructura base</span> que todas las alertas específicas heredarán. Implementa la funcionalidad común de gestión de notificaciones.</p>
+                </div>
+            </div>
+            <div class="slide-number">4 / 12</div>
+        </div>
+
+        <!-- Slide 5: Herencia -->
+        <div class="slide">
+            <h2 class="slide-title">Herencia - Clases Derivadas</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="keyword">class</span> <span class="class-name">AlertaTransito</span> <span class="keyword">extends</span> <span class="class-name">Alerta</span> {
+    <span class="keyword">constructor</span>() {
+        <span class="keyword">super</span>('Tránsito', '🚗');
+        <span class="keyword">this</span>.<span class="method">generarAlertasIniciales</span>();
+    }
+
+    <span class="method">generarAlertasIniciales</span>() {
+        <span class="keyword">this</span>.<span class="method">agregarNotificacion</span>(
+            'Congestión en Autopista Sur',
+            'Se reporta tráfico pesado...'
+        );
+    }
+}
+
+<span class="keyword">class</span> <span class="class-name">AlertaClima</span> <span class="keyword">extends</span> <span class="class-name">Alerta</span> {
+    <span class="keyword">constructor</span>() {
+        <span class="keyword">super</span>('Clima', '🌤️');
+        <span class="keyword">this</span>.<span class="method">generarAlertasIniciales</span>();
+    }
+}
+                </div>
+                <ul class="list-styled">
+                    <li><strong>AlertaTransito:</strong> Hereda de Alerta y gestiona alertas de tráfico</li>
+                    <li><strong>AlertaClima:</strong> Hereda de Alerta y gestiona pronósticos meteorológicos</li>
+                    <li><strong>AlertaSalud:</strong> Hereda de Alerta y gestiona información de salud pública</li>
+                    <li><strong>AlertaEventos:</strong> Hereda de Alerta y gestiona eventos culturales</li>
+                    <li><strong>AlertaNoticias:</strong> Hereda de Alerta y gestiona noticias locales</li>
+                </ul>
+            </div>
+            <div class="slide-number">5 / 12</div>
+        </div>
+
+        <!-- Slide 6: Polimorfismo -->
+        <div class="slide">
+            <h2 class="slide-title">Polimorfismo en Acción</h2>
+            <div class="slide-content">
+                <div class="card">
+                    <h3><span class="icon">🔄</span> Concepto</h3>
+                    <p>Todas las clases heredadas implementan el método <span class="highlight">generarAlertasIniciales()</span> de manera diferente, pero se pueden tratar de forma uniforme.</p>
+                </div>
+                <div class="code-block">
+<span class="comment">// Cada clase implementa su propia lógica</span>
+<span class="keyword">class</span> <span class="class-name">AlertaSalud</span> <span class="keyword">extends</span> <span class="class-name">Alerta</span> {
+    <span class="method">generarAlertasIniciales</span>() {
+        <span class="keyword">this</span>.<span class="method">agregarNotificacion</span>(
+            'Campaña de Vacunación',
+            'Jornada de vacunación gratuita...'
+        );
+    }
+}
+
+<span class="keyword">class</span> <span class="class-name">AlertaEventos</span> <span class="keyword">extends</span> <span class="class-name">Alerta</span> {
+    <span class="method">generarAlertasIniciales</span>() {
+        <span class="keyword">this</span>.<span class="method">agregarNotificacion</span>(
+            'Festival de Música',
+            'Gran concierto en el Parque...'
+        );
+    }
+}
+                </div>
+                <div class="card">
+                    <p style="text-align: center;">
+                        <span class="highlight">Ventaja:</span> Mismo método, comportamientos específicos según el tipo de alerta
+                    </p>
+                </div>
+            </div>
+            <div class="slide-number">6 / 12</div>
+        </div>
+
+        <!-- Slide 7: Sistema de Gestión -->
+        <div class="slide">
+            <h2 class="slide-title">Sistema de Gestión</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="keyword">class</span> <span class="class-name">SistemaGestion</span> {
+    <span class="keyword">constructor</span>() {
+        <span class="keyword">this</span>.usuarios = <span class="keyword">this</span>.<span class="method">cargarUsuarios</span>();
+        <span class="keyword">this</span>.usuarioActual = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.alertas = {
+            transito: <span class="keyword">new</span> <span class="class-name">AlertaTransito</span>(),
+            clima: <span class="keyword">new</span> <span class="class-name">AlertaClima</span>(),
+            salud: <span class="keyword">new</span> <span class="class-name">AlertaSalud</span>(),
+            eventos: <span class="keyword">new</span> <span class="class-name">AlertaEventos</span>(),
+            noticias: <span class="keyword">new</span> <span class="class-name">AlertaNoticias</span>()
+        };
+    }
+}
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🎯 Responsabilidades</h3>
+                        <ul>
+                            <li>Gestión de usuarios</li>
+                            <li>Autenticación y seguridad</li>
+                            <li>Control de sesiones</li>
+                            <li>Instanciación de alertas</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💾 Persistencia</h3>
+                        <ul>
+                            <li>localStorage para datos</li>
+                            <li>Serialización de objetos</li>
+                            <li>Recuperación de sesiones</li>
+                            <li>Sincronización automática</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">7 / 12</div>
+        </div>
+
+        <!-- Slide 8: Registro de Usuarios -->
+        <div class="slide">
+            <h2 class="slide-title">Registro de Usuarios</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="method">registrarUsuario</span>(nombre, apellido, identificacion, 
+                  direccion, usuario, contrasena, alertas) {
+    
+    <span class="comment">// Validar usuario existente</span>
+    <span class="keyword">const</span> existeUsuario = <span class="keyword">this</span>.usuarios
+        .<span class="method">find</span>(u => u.usuario === usuario);
+    <span class="keyword">if</span> (existeUsuario) {
+        <span class="keyword">return</span> { exito: <span class="keyword">false</span>, mensaje: 'Usuario ya existe' };
+    }
+
+    <span class="comment">// Crear nuevo usuario</span>
+    <span class="keyword">const</span> nuevoUsuario = <span class="keyword">new</span> <span class="class-name">Usuario</span>(
+        nombre, apellido, identificacion, 
+        direccion, usuario, contrasena
+    );
+    
+    <span class="comment">// Agregar alertas seleccionadas</span>
+    alertas.<span class="method">forEach</span>(alerta => nuevoUsuario.<span class="method">agregarAlerta</span>(alerta));
+    
+    <span class="keyword">this</span>.usuarios.<span class="method">push</span>(nuevoUsuario);
+    <span class="keyword">this</span>.<span class="method">guardarUsuarios</span>();
+    
+    <span class="keyword">return</span> { exito: <span class="keyword">true</span>, mensaje: 'Registro exitoso' };
+}
+                </div>
+            </div>
+            <div class="slide-number">8 / 12</div>
+        </div>
+
+        <!-- Slide 9: Inicio de Sesión -->
+        <div class="slide">
+            <h2 class="slide-title">Sistema de Autenticación</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="method">iniciarSesion</span>(usuario, contrasena) {
+    <span class="comment">// Buscar usuario</span>
+    <span class="keyword">const</span> usuarioEncontrado = <span class="keyword">this</span>.usuarios
+        .<span class="method">find</span>(u => u.usuario === usuario);
+
+    <span class="keyword">if</span> (!usuarioEncontrado) {
+        <span class="keyword">return</span> { 
+            exito: <span class="keyword">false</span>, 
+            mensaje: 'El usuario no está registrado' 
+        };
+    }
+
+    <span class="keyword">if</span> (usuarioEncontrado.contrasena !== contrasena) {
+        <span class="keyword">return</span> { 
+            exito: <span class="keyword">false</span>, 
+            mensaje: 'Contraseña incorrecta' 
+        };
+    }
+
+    <span class="keyword">this</span>.usuarioActual = usuarioEncontrado;
+    <span class="keyword">return</span> { exito: <span class="keyword">true</span>, usuario: usuarioEncontrado };
+}
+                </div>
+                <div class="card">
+                    <h3>🔒 Validaciones Implementadas</h3>
+                    <ul>
+                        <li>Verificación de existencia del usuario</li>
+                        <li>Validación de contraseña</li>
+                        <li>Mensajes específicos de error</li>
+                        <li>Gestión de sesión activa</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">9 / 12</div>
+        </div>
+
+        <!-- Slide 10: Persistencia de Datos -->
+        <div class="slide">
+            <h2 class="slide-title">Persistencia con LocalStorage</h2>
+            <div class="slide-content">
+                <div class="code-block">
+<span class="comment">// Guardar usuarios en localStorage</span>
+<span class="method">guardarUsuarios</span>() {
+    localStorage.<span class="method">setItem</span>(
+        'vivalerta_usuarios', 
+        JSON.<span class="method">stringify</span>(<span class="keyword">this</span>.usuarios)
+    );
+}
+
+<span class="comment">// Cargar usuarios desde localStorage</span>
+<span class="method">cargarUsuarios</span>() {
+    <span class="keyword">const</span> usuariosGuardados = localStorage
+        .<span class="method">getItem</span>('vivalerta_usuarios');
+    
+    <span class="keyword">if</span> (usuariosGuardados) {
+        <span class="keyword">const</span> data = JSON.<span class="method">parse</span>(usuariosGuardados);
+        <span class="keyword">return</span> data.<span class="method">map</span>(u => {
+            <span class="keyword">const</span> usuario = <span class="keyword">new</span> <span class="class-name">Usuario</span>(
+                u.nombre, u.apellido, u.numeroIdentificacion,
+                u.direccion, u.usuario, u.contrasena
+            );
+            usuario.alertasSeleccionadas = u.alertasSeleccionadas;
+            <span class="keyword">return</span> usuario;
+        });
+    }
+    <span class="keyword">return</span> [];
+}
+                </div>
+            </div>
+            <div class="slide-number">10 / 12</div>
+        </div>
+
+        <!-- Slide 11: Flujo de Datos -->
+        <div class="slide">
+            <h2 class="slide-title">Flujo de Datos del Sistema</h2>
+            <div class="slide-content">
+                <div class="flow-chart">
+                    <div class="flow-item">👤 Usuario interactúa con la UI</div>
+                    <div class="diagram-arrow">↓</div>
+                    <div class="flow-item">📱 DOM captura el evento</div>
+                    <div class="diagram-arrow">↓</div>
+                    <div class="flow-item">⚙️ AplicacionVivalerta procesa la acción</div>
+                    <div class="diagram-arrow">↓</div>
+                    <div class="flow-item">🏗️ SistemaGestion ejecuta lógica de negocio</div>
+                    <div class="diagram-arrow">↓</div>
+                    <div class="flow-item">🔔 Clases de Alerta generan contenido</div>
+                    <div class="diagram-arrow">↓</div>
+                    <div class="flow-item">💾 Datos se persisten en localStorage</div>
+                    <div class="diagram-arrow">↓</div>
+                    <div class="flow-item">🖥️ UI se actualiza dinámicamente</div>
+                </div>
+            </div>
+            <div class="slide-number">11 / 12</div>
+        </div>
+
+        <!-- Slide 12: Ventajas de la Arquitectura -->
+        <div class="slide">
+            <h2 class="slide-title">Ventajas de la Arquitectura POO</h2>
+            <div class="slide-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>🎯 Modularidad</h3>
+                        <p>Cada clase tiene una responsabilidad específica y bien definida, facilitando el mantenimiento.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 Reutilización</h3>
+                        <p>La herencia permite reutilizar código común entre diferentes tipos de alertas.</p>
+                    </div>
+                    <div class="card">
+                        <h3>📈 Escalabilidad</h3>
+                        <p>Agregar nuevos tipos de alertas es simple: solo crear una nueva clase heredada.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Encapsulamiento</h3>
+                        <p>Los datos internos están protegidos y se accede mediante métodos específicos.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🧪 Mantenibilidad</h3>
+                        <p>Código organizado y fácil de entender, probar y modificar sin afectar otros módulos.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🎨 Polimorfismo</h3>
+                        <p>Diferentes clases responden al mismo método de manera específica según su tipo.</p>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 20px; text-align: center;">
+                    <h3 style="justify-content: center;">✅ Resultado Final</h3>
+                    <p style="font-size: 1.3rem;">Sistema robusto, mantenible y profesional que cumple con los principios SOLID de la POO</p>
+                </div>
+            </div>
+            <div class="slide-number">12 / 13</div>
+        </div>
+
+        <!-- Slide 13: Pantalla Final -->
+        <div class="slide">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <div style="font-size: 6rem; margin-bottom: 40px;">🎉</div>
+                <h1 style="font-size: 4rem; color: #fbbf24; margin-bottom: 30px;">¡Gracias por su atención!</h1>
+                <h2 style="font-size: 2.5rem; color: white; margin-bottom: 40px;">VIVALERTA - Backend</h2>
+                <p style="font-size: 1.8rem; color: rgba(255,255,255,0.9); margin-bottom: 20px;">Arquitectura POO</p>
+                <div style="font-size: 1.3rem; color: rgba(255,255,255,0.7); margin-top: 50px;">
+                    Programación Orientada a Objetos aplicada
+                </div>
+                <div style="font-size: 3rem; margin-top: 60px;">
+                    💻 🏗️ ⚙️
+                </div>
+            </div>
+            <div class="slide-number">13 / 13</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+        <button class="btn" id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            
+            if (currentSlide === slides.length - 1) {
+                nextBtn.textContent = '✓ Finalizado';
+                nextBtn.style.opacity = '0.7';
+            } else {
+                nextBtn.textContent = 'Siguiente →';
+                nextBtn.style.opacity = '1';
+            }
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Inicializar
+        prevBtn.disabled = true;
+    </script>
+</body>
+</html>
